@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>وهمي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rakkas&family=El+Messiri:wght@400;700&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"><style>
+  :root{
+    --ink:#0c0c0c;
+    --yellow:#e8ff2e;
+    --fire:#ff3319;
+    --white:#fbfbf8;
+    --grey:#7a7a76;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html, body{ height:100%; }
+  body{
+    font-family:'Cairo', sans-serif;
+    background:var(--ink);
+    color:var(--white);
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .hidden{display:none !important;}
+  img{display:block; max-width:100%;}
+  a{color:inherit; text-decoration:none;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  .anton{font-family:'Anton', sans-serif;}
+
+  /* ============ Splash ============ */
+  #splashScreen{
+    position:fixed; inset:0; z-index:999;
+    background:var(--yellow);
+    display:flex; align-items:center; justify-content:center;
+    max-width:480px; margin:0 auto;
+    animation:splashOut 0.6s ease forwards; animation-delay:2s;
+  }
+  .splash-name{
+  font-family:'El Messiri', sans-serif;
+  font-weight:800;
+  font-size:90px; color:var(--ink);
+  transform:scale(0.7) rotate(-6deg); opacity:0;
+  animation:splashIn 0.7s cubic-bezier(.2,1.4,.4,1) forwards 0.1s;
+}
+  @keyframes splashIn{ to{ transform:scale(1) rotate(-6deg); opacity:1; } }
+  @keyframes splashOut{ to{ opacity:0; visibility:hidden; pointer-events:none; } }
+
+  /* ============ Top bar ============ */
+  .top-bar{
+    position:fixed; top:0; left:0; right:0; z-index:60;
+    max-width:480px; margin:0 auto;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:16px;
+  }
+  .top-bar button, .top-bar a{
+    width:42px; height:42px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--yellow); color:var(--yellow);
+    display:flex; align-items:center; justify-content:center; font-size:17px;
+  }
+
+  /* =========================================================
+     ⭐⭐⭐ الجزء الجديد رقم 1: كارت بيتقلب ثلاثي الأبعاد ⭐⭐⭐
+     بدل ما الهامبرجر يفتح نافذة عادية، الشاشة كلها بتتقلب
+     زي ورقة/كارت له وش وضهر — الوش = الهوم، الضهر = تفاصيل الفرع
+  ========================================================= */
+  .flip-perspective{
+    position:relative;
+    width:100%;
+    perspective:1800px;
+  }
+  .flip-inner{
+    position:relative; width:100%;
+    transition:transform 0.9s cubic-bezier(.4,.1,.2,1);
+    transform-style:preserve-3d;
+  }
+  .flip-inner.flipped{ transform:rotateY(180deg); }
+  .flip-face{
+    width:100%;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+  }
+  .flip-front{ position:relative; }
+  .flip-back{
+    position:absolute; inset:0; top:0;
+    transform:rotateY(180deg);
+    overflow-y:auto;
+    background:var(--ink);
+  }
+
+  /* ============ HERO ============ */
+  .hero{ position:relative; height:56vh; min-height:380px; overflow:hidden; }
+  .hero-bg{
+    position:absolute; inset:0;
+    background-size:cover; background-position:center;
+    /* ⭐ 1) صورة المطعم الرئيسية ⭐ */
+    background-image:url('images/wahmi_hero.png');
+    filter:contrast(1.15) saturate(0.85) brightness(0.75);
+  }
+  .hero-slice{
+    position:absolute; left:0; right:0; bottom:-2px; height:38%;
+    background:rgb(126, 31, 3);
+    clip-path:polygon(0 38%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .hero-name-wrap{ position:absolute; bottom:22px; left:0; right:0; display:flex; justify-content:center; }
+.name-badge{
+  background:var(--ink);
+  border-radius:0px;
+  padding:14px 32px 12px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+.restaurant-name{
+  font-family:'El Messiri', sans-serif;
+  font-weight:800;
+  font-size:clamp(36px, 12vw, 58px);
+  line-height:1;
+  color:var(--yellow);
+  letter-spacing:0px;
+}
+.restaurant-tag{
+  background:rgb(126, 38, 3);; color:var(--yellow);
+  display:inline-block; padding:5px 14px;
+  border-radius:0px;
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  margin-top:18px;
+}
+
+  .info-ticker{
+  background:var(--yellow);
+  overflow:hidden;
+  padding:11px 0;
+  transform:skewY(-1.2deg);
+  margin:4px 0 0;
+}
+.ticker-viewport{
+  display:flex;
+  width:max-content;
+  transform:skewY(1.2deg);
+  animation:tickerScroll 12s linear infinite;
+}
+.ticker-track{
+  display:flex; align-items:center; gap:16px;
+  padding-left:16px;
+  flex-shrink:0;
+}
+.ticker-track a, .ticker-track span:not(.ticker-dot){
+  color:var(--ink); font-weight:900; font-size:13px;
+  white-space:nowrap;
+}
+@keyframes tickerScroll{
+  from{ transform:skewY(1.2deg) translateX(0); }
+  to{ transform:skewY(1.2deg) translateX(-50%); }
+}
+.ticker-dot{ color:rgba(12,12,12,0.4); font-size:8px; }
+@keyframes tickerScroll{
+  from{ transform:skewY(1.2deg) translateX(0); }
+  to{ transform:skewY(1.2deg) translateX(-50%); }
+}
+
+  .profile-row{ display:flex; align-items:center; justify-content:space-between; padding:18px 18px 4px; }
+  .logo-box{
+    width:64px; height:64px; border-radius:50%; border:3px solid var(--yellow);
+    display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--ink);
+  }
+  .logo-box img{ width:100%; height:100%; object-fit:cover; }
+  .logo-fallback{ font-family:'Anton',sans-serif; font-size:12px; color:var(--yellow); }
+  .status-chip{
+    display:flex; align-items:center; gap:8px; background:var(--yellow); color:var(--ink);
+    padding:9px 16px; border-radius:999px; font-weight:900; font-size:12px;
+  }
+  .status-chip.closed{ background:#2a2a28; color:var(--grey); }
+  .pulse-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--fire);
+    animation:pulse 1.6s infinite;
+  }
+  .status-chip.closed .pulse-dot{ background:var(--grey); animation:none; }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(255,51,25,0.55); }
+    70%{ box-shadow:0 0 0 8px rgba(255,51,25,0); }
+    100%{ box-shadow:0 0 0 0 rgba(255,51,25,0); }
+  }
+
+  .social-row{ display:flex; gap:10px; justify-content:center; padding:20px 18px 8px; }
+  .social-row a{
+    width:42px; height:42px; border-radius:12px; background:#1a1a18; border:1px solid #2c2c29;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .social-row svg{ width:19px; height:19px; }
+
+  /* =========================================================
+     ⭐⭐⭐ الجزء الجديد رقم 2: كارت دعوة لفتح المنيو
+     (بيفتح فيوور Stories بدل السكرول العادي)
+  ========================================================= */
+  .menu-cta{
+    margin:26px 18px 40px;
+    position:relative;
+    padding:26px 20px;
+    background:rgb(126, 31, 3);
+    transform:skewY(-1.5deg);
+    overflow:hidden;
+  }
+  .menu-cta-inner{ transform:skewY(1.5deg); }
+  .menu-cta .eyebrow{ font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(12,12,12,0.6); }
+  .menu-cta .anton{ font-size:38px; color:var(--ink); line-height:1; margin-top:4px; }
+  .menu-cta .cta-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:var(--yellow);
+    padding:10px 20px; border-radius:999px;
+    font-weight:900; font-size:13px; margin-top:14px;
+  }
+  .menu-cta .thumbs{
+    position:absolute; left:-10px; bottom:-10px;
+    display:flex; gap:6px; opacity:0.9;
+  }
+  .menu-cta .thumbs img{
+    width:38px; height:52px; object-fit:cover; border-radius:6px;
+    border:2px solid var(--ink); transform:rotate(-6deg);
+  }
+  .menu-cta .thumbs img:nth-child(2){ transform:rotate(3deg); margin-top:-8px; }
+
+  /* =========================================================
+     ⭐⭐⭐ فيوور المنيو بستايل الـ Stories ⭐⭐⭐
+  ========================================================= */
+  #storyViewer{
+    position:fixed; inset:0; z-index:100;
+    background:#000;
+    max-width:480px; margin:0 auto;
+    display:flex; flex-direction:column;
+  }
+  .story-progress{
+    display:flex; gap:5px; padding:12px 10px 0; z-index:5;
+  }
+  .story-progress .seg{
+    flex:1; height:3px; background:rgba(255,255,255,0.25); border-radius:2px; overflow:hidden;
+  }
+  .story-progress .seg .fill{
+    height:100%; width:0%; background:var(--yellow);
+  }
+  .story-progress .seg.done .fill{ width:100%; }
+  .story-progress .seg.active .fill{ animation:storyFill 4s linear forwards; }
+  @keyframes storyFill{ from{ width:0%; } to{ width:100%; } }
+
+  .story-topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 14px; color:#fff;
+  }
+  .story-topbar .name{ font-size:13px; font-weight:800; }
+  .story-close{
+    width:34px; height:34px; border-radius:50%;
+    background:rgba(255,255,255,0.15); color:#fff; font-size:16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .story-stage{
+    position:relative; flex:1; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    background:#000;
+  }
+  .story-slide{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transition:opacity 0.15s;
+    pointer-events:none;
+  }
+  .story-slide.active{ opacity:1; pointer-events:auto; }
+  .story-slide img{ max-width:100%; max-height:100%; object-fit:contain; }
+
+  .story-tap-zones{ position:absolute; inset:0; display:flex; z-index:3; }
+  .story-tap-zones .zone{ flex:1; }
+
+  .story-hint{
+    position:absolute; bottom:16px; left:0; right:0; text-align:center;
+    color:rgba(255,255,255,0.5); font-size:11px; letter-spacing:1px; z-index:2;
+  }
+
+  /* ============ صفحة تفاصيل الفرع (الوش التاني للكارت) ============ */
+  .page{ min-height:100%; background:var(--ink); padding-bottom:40px; }
+  .page-top{ display:flex; align-items:center; gap:12px; padding:20px 18px; }
+  .back-btn{
+    width:38px; height:38px; border-radius:50%; border:2px solid var(--yellow); color:var(--yellow);
+    font-size:16px; display:flex; align-items:center; justify-content:center;
+  }
+  .page-title{ font-size:30px; }
+
+  .d-row{ display:flex; align-items:center; gap:14px; padding:16px 18px; border-bottom:1px solid #232320; }
+  .d-row .row-icon{
+    width:36px; height:36px; border-radius:10px; background:var(--fire); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;
+  }
+  .row-label{ font-size:11px; color:var(--grey); text-transform:uppercase; letter-spacing:1px; }
+  .row-value{ font-size:15px; font-weight:700; margin-top:2px; }
+  .row-arrow{ margin-right:auto; color:var(--grey); }
+
+  .hours-title, .social-title{ padding:24px 18px 8px; font-size:22px; }
+  .hours-row{ display:flex; justify-content:space-between; padding:10px 18px; font-size:14px; border-bottom:1px solid #232320; }
+  .hours-row.today{ font-weight:900; color:var(--yellow); }
+  .hours-row span:last-child{ color:var(--grey); }
+  .hours-row.today span:last-child{ color:var(--yellow); }
+
+  .social-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:12px 18px 10px; }
+  .social-grid a{
+    aspect-ratio:1; border-radius:12px; background:#1a1a18; border:1px solid #2c2c29;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .social-grid svg{ width:20px; height:20px; }
+
+
+ body.is-flipped .top-bar{ display:none; }
+
+.fancy-menu-text{
+  font-family:'Rakkas', cursive;
+  font-size:30px;
+ }
+
+
+.location-card{
+  display:flex; align-items:center; gap:14px;
+  margin:14px 18px 0;
+  background:#1a1a18;
+  border:1px solid #2c2c29;
+  border-radius:14px;
+  padding:14px 16px;
+}
+.location-icon{
+  width:42px; height:42px; border-radius:12px;
+  background:var(--fire);
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px; flex-shrink:0;
+  overflow:hidden;
+}
+.location-title{ font-size:14px; font-weight:800; color:var(--white); }
+.location-sub{ font-size:12px; color:var(--grey); margin-top:2px; }
+.location-arrow{ margin-right:auto; color:var(--yellow); font-size:16px; }
+
+
+
+.site-footer{
+  text-align:center;
+  color:var(--grey);
+  font-size:11px;
+  letter-spacing:1px;
+  padding:18px 0 26px;
+  background:var(--ink);
+}
+.site-footer span{
+  color:var(--yellow);
+  font-weight:800;
+}
+
+
+
+
+</style>
+</head>
+<body>
+
+<div id="splashScreen">
+  <h1 class="splash-name">وهمي</h1>
+</div>
+
+<div class="top-bar">
+  <button onclick="flipToBranch()">☰</button>
+  <!-- ⭐ 2) رقم تليفون المطعم ⭐ -->
+  <a href="tel:01129172872"><svg viewBox="0 0 24 24" width="17" height="17" fill="var(--yellow)">
+    <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.5 21 3 13.5 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .8-.2 1L6.6 10.8z"/>
+  </svg></a>
+</div>
+
+<!-- =========================================================
+     الكارت اللي بيتقلب (الوش = الهوم / الضهر = تفاصيل الفرع)
+========================================================= -->
+<div class="flip-perspective">
+  <div class="flip-inner" id="flipInner">
+
+    <!-- ===== الوش: الصفحة الرئيسية ===== -->
+    <div class="flip-face flip-front">
+        <div class="hero">
+          <div class="hero-bg"></div>
+          <div class="hero-slice"></div>
+           <div class="hero-name-wrap">
+              <div class="name-badge">
+                 <h1 class="restaurant-name">وهمـــــــي</h1>
+                 <div class="restaurant-tag">Burger &amp; Smash</div>
+                 </div>
+             </div>
+        </div>
+
+      
+      <div class="info-ticker">
+         <div class="ticker-viewport" id="tickerViewport">
+  <div class="ticker-track">
+    <span> ألذ برجر في المدينة، اطلبه دلوقتي!</span>
+    <span class="ticker-dot">●</span>
+    <a href="tel:01129172872">📞 01129172872</a>
+    <span class="ticker-dot">●</span>
+  </div>
+  <div class="ticker-track">
+    <span>ألذ برجر في المدينة، اطلبه دلوقتي!</span>
+    <span class="ticker-dot">●</span>
+    <a href="tel:01129172872">📞 01129172872</a>
+    <span class="ticker-dot">●</span>
+  </div>
+</div>
+        </div>
+
+
+
+  <a class="location-card" href="https://maps.apple.com/?ll=30.501406,31.341453&q=Engy%20Mos%E2%80%99s%20Location&t=m" target="_blank">
+     <div class="location-icon">
+  <svg viewBox="0 0 42 42" width="24" height="24">
+    <rect width="42" height="42" fill="none"/>
+    <!-- خطوط الشوارع -->
+    <path d="M0 14 H42 M0 28 H42 M14 0 V42 M28 0 V42" stroke="rgba(232,255,46,0.35)" stroke-width="2"/>
+    <!-- الدبوس -->
+    <path d="M21 10c-4 0-7 3-7 7 0 5 7 12 7 12s7-7 7-12c0-4-3-7-7-7z" fill="var(--yellow)"/>
+    <circle cx="21" cy="17" r="2.6" fill="var(--ink)"/>
+  </svg>
+</div>
+        <div class="location-text">
+            <div class="location-title">لوكيشن المطعم</div>
+            <div class="location-sub">اضغطي هنا لفتح الخريطة</div>
+        </div>
+     <div class="location-arrow">↗</div>
+   </a> 
+
+
+
+      <div class="profile-row">
+           <!-- ⭐ 4) لوجو المطعم ⭐ -->
+            <div class="logo-box">
+             <img src="images/wahmi_logo.png"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="logo-fallback" style="display:none;">وهمي</div>
+            </div>
+            <div class="status-chip" id="statusBadge">
+             <span class="pulse-dot"></span>
+             <span id="statusText">...</span>
+            </div>
+      </div>
+
+      <!-- ⭐ 5) روابط السوشيال ميديا — كرري نفسها في تفاصيل الفرع تحت ⭐ -->
+      <div class="social-row">
+        <a href="https://www.facebook.com/share/1Jh356nfjM/?mibextid=wwXIfr" target="_blank" title="Facebook"><svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+        <a href="https://www.instagram.com/webgy_?igsh=ZHFqcWhmeWtzOWMy&utm_source=qr" target="_blank" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+        <a href="https://www.tiktok.com/@webgy_?_r=1&_t=ZS-97Hf3dqQz5D" target="_blank" title="TikTok"><svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M14 3c.4 2 1.9 3.6 4 3.9v2.6c-1.5 0-3-.5-4-1.3v6.3a5 5 0 1 1-4.3-5v2.7a2.3 2.3 0 1 0 1.9 2.3V3z"/></svg></a>
+        <a href="https://wa.me/201129172872?text=عايز%20احجز%20طاولة" target="_blank" title="WhatsApp"><svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.8 14.2c-.2.6-1.4 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .5.4.2.5.7 1.8.7 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.4 2.4 1.5.3.1.4.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.7.8c.2.1.4.2.4.4.1.2.1.9-.1 1.5z"/></svg></a>
+      </div>
+
+      <!-- كارت الدعوة لفتح فيوور المنيو (Stories) -->
+      <div class="menu-cta" onclick="openStoryViewer()">
+        <div class="menu-cta-inner">
+          <div class="eyebrow">Tap to explore</div>
+          <div class="anton"><span class="fancy-menu-text">المنيو</span> 🔥</div>
+          <div class="cta-btn">ابدأ</div>
+        </div>
+        <div class="thumbs">
+          <!-- ⭐ صورتين صغيرتين بس للمعاينة (اختياري) — أي 2 صورة من صور المنيو ⭐ -->
+          <img src="images/wahmi_chicken_menu.png">
+          <img src="images/wahmi_beef_menu.png">
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== الضهر: تفاصيل الفرع ===== -->
+    <div class="flip-face flip-back">
+      <div class="page">
+        <div class="page-top">
+          <button class="back-btn" onclick="flipToHome()">‹</button>
+          <span class="page-title anton">تفاصيل الفرع</span>
+        </div>
+
+        <a class="d-row" href="tel:01129172872">
+          <div class="row-icon">📞</div>
+          <div><div class="row-label">Phone</div><div class="row-value">01129172872</div></div>
+          <span class="row-arrow">›</span>
+        </a>
+        <a class="d-row" href="https://maps.apple.com/?ll=30.501406,31.341453&q=Engy%20Mos%E2%80%99s%20Location&t=m" target="_blank">
+          <div class="row-icon">📍</div>
+          <div><div class="row-label">Address</div><div class="row-value">الزقازيق , محافظة الشرقيه</div></div>
+          <span class="row-arrow">↗</span>
+        </a>
+        <!-- صف اختياري — امسحيه لو مش هتستخدميه -->
+        
+
+        <div class="hours-title anton">مواعيد العمل</div>
+        <div id="hoursList"></div>
+
+        <div class="social-title anton">تابعونا</div>
+        <div class="social-grid">
+          <a href="https://www.facebook.com/share/1Jh356nfjM/?mibextid=wwXIfr" target="_blank"><svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg></a>
+          <a href="https://www.instagram.com/webgy_?igsh=ZHFqcWhmeWtzOWMy&utm_source=qr" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="https://www.tiktok.com/@webgy_?_r=1&_t=ZS-97Hf3dqQz5D" target="_blank"><svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M14 3c.4 2 1.9 3.6 4 3.9v2.6c-1.5 0-3-.5-4-1.3v6.3a5 5 0 1 1-4.3-5v2.7a2.3 2.3 0 1 0 1.9 2.3V3z"/></svg></a>
+          <a href="https://wa.me/201129172872?text=عايز%20احجز%20طاولة" target="_blank"><svg viewBox="0 0 24 24" fill="var(--yellow)"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.8 14.2c-.2.6-1.4 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .5.4.2.5.7 1.8.7 1.9.1.1.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.4 2.4 1.5.3.1.4.1.6-.1l.9-1c.2-.3.4-.2.7-.1l1.7.8c.2.1.4.2.4.4.1.2.1.9-.1 1.5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div class="site-footer">_Powered by <span>@engy_mostaffa   /    @webgy</span></div>
+
+
+
+<!-- =========================================================
+     فيوور المنيو بستايل الـ Stories (تظهر فوق كل حاجة)
+========================================================= -->
+<div id="storyViewer" class="hidden">
+  <div class="story-progress" id="storyProgress"></div>
+  <div class="story-topbar">
+    <span class="name anton">وهمي · المنيو</span>
+    <button class="story-close" onclick="closeStoryViewer()">✕</button>
+  </div>
+  <div class="story-stage" id="storyStage">
+
+    <!-- ⭐ 6) صورة الكفر (أول صورة في المنيو) ⭐ -->
+    <div class="story-slide"><img src="images/wahmi_menu_front_cover.png"></div>
+
+    <!-- ⭐ 7) صور المنيو — كرري نفس السطر (story-slide) لكل صورة ⭐ -->
+    <div class="story-slide"><img src="images/wahmi_chicken_menu.png"></div>
+    <div class="story-slide"><img src="images/wahmi_beef_menu.png"></div>
+     <!-- زوّدي/امسحي story-slide دي حسب عدد صور المنيو عندك -->
+
+    <!-- ⭐ 8) صورة كفر نهاية المنيو ⭐ -->
+    <div class="story-slide"><img src="images/wahmi_menu_back_cover.png"></div>
+
+    <div class="story-tap-zones">
+      <div class="zone" onclick="storyPrev()"></div>
+      <div class="zone" onclick="storyNext()"></div>
+    </div>
+    <div class="story-hint">اضغطي يمين/شمال للتنقل</div>
+  </div>
+</div>
+
+<script>
+/* ============ الكارت اللي بيتقلب ============ */
+function flipToBranch(){
+  document.getElementById('flipInner').classList.add('flipped');
+  document.body.classList.add('is-flipped');
+}
+function flipToHome(){
+  document.getElementById('flipInner').classList.remove('flipped');
+  document.body.classList.remove('is-flipped');
+}
+/* ============ فيوور المنيو (Stories) ============ */
+let storySlides, storyProgressWrap, currentStory = 0, storyTimer = null;
+const STORY_DURATION = 4000;
+
+function initStoryViewer(){
+  storySlides = document.querySelectorAll('.story-slide');
+  storyProgressWrap = document.getElementById('storyProgress');
+  storyProgressWrap.innerHTML = '';
+  storySlides.forEach(()=>{
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.innerHTML = '<div class="fill"></div>';
+    storyProgressWrap.appendChild(seg);
+  });
+}
+
+function openStoryViewer(){
+  initStoryViewer();
+  currentStory = 0;
+  document.getElementById('storyViewer').classList.remove('hidden');
+  renderStory();
+}
+function closeStoryViewer(){
+  clearTimeout(storyTimer);
+  document.getElementById('storyViewer').classList.add('hidden');
+}
+function renderStory(){
+  clearTimeout(storyTimer);
+  storySlides.forEach((s,i)=> s.classList.toggle('active', i===currentStory));
+  const segs = storyProgressWrap.querySelectorAll('.seg');
+  segs.forEach((seg,i)=>{
+    seg.classList.remove('active','done');
+    seg.querySelector('.fill').style.animation = 'none';
+    if(i < currentStory) seg.classList.add('done');
+    if(i === currentStory) seg.classList.add('active');
+  });
+  storyTimer = setTimeout(storyNext, STORY_DURATION);
+}
+function storyNext(){
+  if(currentStory < storySlides.length - 1){ currentStory++; renderStory(); }
+  else{ closeStoryViewer(); }
+}
+function storyPrev(){
+  if(currentStory > 0){ currentStory--; renderStory(); }
+  else{ renderStory(); }
+}
+
+/* ============ حالة مفتوح/مقفول تلقائيًا ============ */
+function updateOpenStatus(){
+  const hour = new Date().getHours();
+  const isOpen = !(hour >= 4 && hour < 9); // مفتوح ٩ص - ٤ فجرًا
+  const badge = document.getElementById('statusBadge');
+  const text = document.getElementById('statusText');
+  badge.classList.toggle('closed', !isOpen);
+  text.textContent = isOpen ? 'مفتوح الآن' : 'مقفول دلوقتي';
+}
+updateOpenStatus();
+setInterval(updateOpenStatus, 60000);
+
+/* ============ مواعيد العمل ============ */
+const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const todayIndex = new Date().getDay();
+const hoursList = document.getElementById('hoursList');
+days.forEach((day, i) => {
+  const row = document.createElement('div');
+  row.className = 'hours-row' + (i === todayIndex ? ' today' : '');
+  row.innerHTML = `<span>${day}</span><span>٩:٠٠ ص - ٤:٠٠ ف</span>`;
+  hoursList.appendChild(row);
+});
+</script>
+
+</body>
+</html>
